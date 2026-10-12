@@ -13,12 +13,12 @@ if not _logfire_base_url and settings.LOGFIRE_TOKEN:
     if settings.LOGFIRE_TOKEN.startswith("pylf_v2_eu_"):
         _logfire_base_url = "https://logfire-eu.pydantic.dev"
 
-if settings.LOGFIRE_TOKEN:
-    logfire.configure(
-        token=settings.LOGFIRE_TOKEN,
-        service_name="enterprise-ingestion-service",
-        advanced=logfire.AdvancedOptions(base_url=_logfire_base_url) if _logfire_base_url else None,
-    )
+logfire.configure(
+    token=settings.LOGFIRE_TOKEN,
+    service_name="enterprise-ingestion-service",
+    send_to_logfire="if-token-present",
+    advanced=logfire.AdvancedOptions(base_url=_logfire_base_url) if _logfire_base_url else None,
+)
 
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
@@ -27,15 +27,23 @@ from app.ingestion.chunking.splitter import chunk_text
 from app.ingestion.loaders.html import parse_html
 from app.ingestion.loaders.pdf import parse_pdf
 from app.ingestion.loaders.text import parse_text
-from app.services.retrieval.embedding import embed_texts, get_embedding_dim
+from app.services.retrieval.embeddings import embed_texts, get_embedding_dim
 
 # Local folder where parsed + chunked JSON metadata is saved (replaces GCS processed bucket)
 PROCESSED_DATA_DIR = "processed_data"
 
-# Initialize Qdrant Client
+# Qdrant Cloud uses port 443 (HTTPS). Ports 6333/6334 may be blocked by the network,
+# so we explicitly force port 443 in the URL.
+_qdrant_url = settings.QDRANT_URL.rstrip("/")
+if ":" not in _qdrant_url.split("//", 1)[-1]:
+    _qdrant_url = f"{_qdrant_url}:443"
+
 qdrant_client = QdrantClient(
-    url=settings.QDRANT_URL,
+    url=_qdrant_url,
     api_key=settings.QDRANT_API_KEY,
+    prefer_grpc=False,
+    http2=False,
+    check_compatibility=False,
 )
 
 

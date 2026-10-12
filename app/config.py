@@ -38,13 +38,16 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str | None = None
     JUDGE_OPENAI_API_KEY: str | None = None
 
+    # --- JINA EMBEDDINGS (optional, falls back to local model) ---
+    JINA_API_KEY: str | None = None
+
     # --- PORTKEY LLM GATEWAY ---
-    PORTKEY_API_KEY: str
+    PORTKEY_API_KEY: str | None = None
     PORTKEY_PRIMARY_SLUG: str = "marathon-api"
     PORTKEY_FALLBACK_SLUG: str = "anthropic-fallback"
     # Portkey saved config is referenced by its system-generated `pc-...` ID.
     # Required when block_inline_config is enabled on the workspace.
-    PORTKEY_PRIMARY_CONFIG_ID: str
+    PORTKEY_PRIMARY_CONFIG_ID: str | None = None
 
     # --- QDRANT VECTOR DB ---
     QDRANT_URL: str = Field(
@@ -56,11 +59,11 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str = "enterprise_rag"
 
     # --- NEON SERVERLESS POSTGRES (LangGraph checkpointer) ---
-    NEON_DB_URL: str
+    NEON_DB_URL: str | None = None
 
     # --- UPSTASH REDIS (rate limiting) ---
-    UPSTASH_REDIS_REST_URL: str
-    UPSTASH_REDIS_REST_TOKEN: str
+    UPSTASH_REDIS_REST_URL: str | None = None
+    UPSTASH_REDIS_REST_TOKEN: str | None = None
 
     # --- API SAFETY ---
     API_KEY: str | None = Field(default=None, alias="RAG_API_KEY")
