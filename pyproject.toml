@@ -1,0 +1,24 @@
+[project]
+name = "enterprise-grade-rag-application"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "fastapi>=0.143.0",
+    "ipykernel>=7.4.0",
+    "langchain-google-genai>=4.4.1",
+    "logfire[fastapi,requests]>=5.1.1",
+    "loguru>=0.7.3",
+    "numpy>=2.5.4",
+    "pdfplumber>=0.11.10",
+    "pypdf>=6.20.0",
+    "python-docx>=1.2.0",
+    "python-pptx>=1.0.2",
+    "qdrant-client>=1.19.1",
+    "requests>=2.34.2",
+    "sentence-transformers>=6.1.0",
+    "unstructured>=0.27.25",
+    "uvicorn[standard]>=0.54.0",
+]
