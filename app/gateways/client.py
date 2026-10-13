@@ -6,8 +6,9 @@ from app.config import settings
 
 
 # Production gateway config:
-#   - Fallback: primary @rag/llama-3.3-70b-versatile → @brag/llama-3.1-8b-instant on failure
-#   - Cache: semantic mode (requires Portkey Enterprise — silently falls back to simple on free/starter)
+#   - Primary: @<slug>/openai/gpt-oss-120b
+#   - Fallback: @<slug>/qwen/qwen3-32b on failure
+#   - Cache: simple mode
 #   - Retry: 2 attempts on rate limit / server error before triggering the fallback target
 GATEWAY_CONFIG = {
     "strategy": {"mode": "fallback"},
@@ -17,8 +18,8 @@ GATEWAY_CONFIG = {
         "on_status_codes": [429, 503]
     },
     "targets": [
-        {"override_params": {"model": f"@{settings.GROQ_SLUG}/llama-3.3-70b-versatile"}},
-        {"override_params": {"model": f"@{settings.GROQ_SLUG_2}/llama-3.1-8b-instant"}},
+        {"override_params": {"model": f"@{settings.GROQ_SLUG}/openai/gpt-oss-120b"}},
+        {"override_params": {"model": f"@{settings.GROQ_SLUG_2}/qwen/qwen3-32b"}},
     ]
 }
 
@@ -36,13 +37,13 @@ def get_langchain_llm(feature: str = "rag") -> ChatOpenAI:
       Portkey is a proxy. It exposes an OpenAI-compatible endpoint at PORTKEY_GATEWAY_URL.
       ChatGroq is hardwired to Groq's API and does not support routing through a proxy.
       ChatOpenAI supports base_url (points at Portkey) and default_headers (passes Portkey
-      auth + config). The @rag/model-name format is Portkey-specific — Groq's own client
+      auth + config). The @slug/model-name format is Portkey-specific — Groq's own client
       does not understand it. You are still using Groq models; Portkey is just in the middle.
     """
     return ChatOpenAI(
         api_key=settings.PORTKEY_API_KEY,
         base_url=PORTKEY_GATEWAY_URL,
-        model=f"@{settings.GROQ_SLUG}/qwen/qwen3.8-27b",
+        model=f"@{settings.GROQ_SLUG}/openai/gpt-oss-120b",
         temperature=0,
         default_headers=createHeaders(
             api_key=settings.PORTKEY_API_KEY,
