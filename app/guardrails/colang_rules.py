@@ -96,11 +96,15 @@ define flow farewell
   bot express farewell
 """
 
-YAML_CONTENT = """
+from app.config import settings
+
+YAML_CONTENT = f"""
 models:
   - type: main
     engine: openai
-    model: gpt-3.5-turbo
+    model: {settings.EVREN_MODEL}
+    parameters:
+      base_url: {settings.EVREN_BASE_URL}
 
 instructions:
   - type: general
