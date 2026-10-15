@@ -143,5 +143,29 @@ def log_connection_summary(results: Dict[str, ConnectionStatus]) -> bool:
         else:
             all_healthy = False
             logfire.warning(f"❌ {name}: unhealthy - {status.message}")
-
     return all_healthy
+
+
+if __name__ == "__main__":
+    import sys
+    if sys.platform == "win32":
+        try:
+            sys.stdout.reconfigure(encoding="utf-8")
+        except AttributeError:
+            pass
+
+    print("\n🔍 Servis baglantilari kontrol ediliyor...\n")
+    results = check_all_connections()
+    all_healthy = log_connection_summary(results)
+
+    print("\n" + "=" * 55)
+    for name, status in results.items():
+        symbol = "[OK]" if status.healthy else "[FAIL]"
+        latency = f" ({status.latency_ms:.1f}ms)" if status.latency_ms else ""
+        print(f"{symbol:6} {name:22}: {status.message}{latency}")
+    print("=" * 55)
+
+    if all_healthy:
+        print(">> Tum servisler saglikli!\n")
+    else:
+        print(">> Bazi servislerde baglanti sorunu var!\n")
