@@ -1,0 +1,97 @@
+<svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Enterprise Agentic RAG</title>
+  <desc id="desc">Animated enterprise retrieval augmented generation architecture banner</desc>
+  <defs>
+    <linearGradient id="background" x1="60" y1="20" x2="1140" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#07111F"/>
+      <stop offset="0.52" stop-color="#102B50"/>
+      <stop offset="1" stop-color="#164E78"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="390" y1="0" x2="810" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#60A5FA"/>
+      <stop offset="0.5" stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#818CF8"/>
+      <animate attributeName="x1" values="250;470;250" dur="7s" repeatCount="indefinite"/>
+      <animate attributeName="x2" values="720;950;720" dur="7s" repeatCount="indefinite"/>
+    </linearGradient>
+    <radialGradient id="orb" cx="0" cy="0" r="1" gradientTransform="translate(600 136) rotate(90) scale(82)">
+      <stop stop-color="#67E8F9" stop-opacity="0.42"/>
+      <stop offset="0.55" stop-color="#2563EB" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#2563EB" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M32 0H0V32" stroke="#93C5FD" stroke-opacity="0.06"/>
+    </pattern>
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#020617" flood-opacity="0.35"/>
+    </filter>
+    <path id="leftPath" d="M205 136C320 72 430 72 534 124"/>
+    <path id="rightPath" d="M666 124C775 72 882 76 995 136"/>
+  </defs>
+
+  <rect width="1200" height="360" rx="28" fill="url(#background)"/>
+  <rect width="1200" height="360" rx="28" fill="url(#grid)"/>
+  <circle cx="1085" cy="-28" r="220" stroke="#67E8F9" stroke-opacity="0.08" stroke-width="2"/>
+  <circle cx="1085" cy="-28" r="164" stroke="#67E8F9" stroke-opacity="0.07"/>
+  <circle cx="92" cy="356" r="158" stroke="#60A5FA" stroke-opacity="0.08"/>
+
+  <g opacity="0.8">
+    <path d="M205 136C320 72 430 72 534 124" stroke="url(#accent)" stroke-opacity="0.36" stroke-width="1.5" stroke-dasharray="5 8"/>
+    <path d="M666 124C775 72 882 76 995 136" stroke="url(#accent)" stroke-opacity="0.36" stroke-width="1.5" stroke-dasharray="5 8"/>
+    <circle r="4" fill="#67E8F9" filter="url(#glow)">
+      <animateMotion dur="3.8s" repeatCount="indefinite"><mpath href="#leftPath"/></animateMotion>
+    </circle>
+    <circle r="4" fill="#A5B4FC" filter="url(#glow)">
+      <animateMotion dur="4.2s" repeatCount="indefinite"><mpath href="#rightPath"/></animateMotion>
+    </circle>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="134" y="106" width="142" height="60" rx="16" fill="#0F213A" stroke="#60A5FA" stroke-opacity="0.35"/>
+    <circle cx="164" cy="136" r="11" fill="#2563EB"/>
+    <path d="M159 136H169M164 131V141" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+    <text x="187" y="132" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">ENTERPRISE</text>
+    <text x="187" y="149" fill="#7DD3FC" font-family="Segoe UI, Arial, sans-serif" font-size="10" letter-spacing="1">KNOWLEDGE</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="924" y="106" width="142" height="60" rx="16" fill="#0F213A" stroke="#22D3EE" stroke-opacity="0.35"/>
+    <circle cx="954" cy="136" r="11" fill="#0891B2"/>
+    <path d="M949 139L953 143L960 130" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="977" y="132" fill="#E2E8F0" font-family="Segoe UI, Arial, sans-serif" font-size="12" font-weight="700">GROUNDED</text>
+    <text x="977" y="149" fill="#67E8F9" font-family="Segoe UI, Arial, sans-serif" font-size="10" letter-spacing="1">ANSWERS</text>
+  </g>
+
+  <circle cx="600" cy="136" r="82" fill="url(#orb)">
+    <animate attributeName="r" values="74;88;74" dur="4.5s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.72;1;0.72" dur="4.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="600" cy="136" r="45" fill="#0B1D35" stroke="url(#accent)" stroke-width="2" filter="url(#softShadow)"/>
+  <path d="M585 145V128L600 119L615 128V145L600 154L585 145Z" stroke="#E0F2FE" stroke-width="2"/>
+  <circle cx="600" cy="136" r="6" fill="#22D3EE" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.55;1;0.55" dur="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <text x="600" y="229" text-anchor="middle" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="34" font-weight="750" letter-spacing="-1">Enterprise Agentic RAG</text>
+  <text x="600" y="258" text-anchor="middle" fill="#B9D3EB" font-family="Segoe UI, Arial, sans-serif" font-size="14" letter-spacing="1.4">RETRIEVE  ·  REASON  ·  RESPOND  ·  OBSERVE</text>
+
+  <g font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="700" letter-spacing="0.8">
+    <rect x="334" y="290" width="118" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.07" stroke="#FFFFFF" stroke-opacity="0.11"/>
+    <text x="393" y="309" text-anchor="middle" fill="#BFDBFE">LANGGRAPH</text>
+    <rect x="464" y="290" width="96" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.07" stroke="#FFFFFF" stroke-opacity="0.11"/>
+    <text x="512" y="309" text-anchor="middle" fill="#A5F3FC">QDRANT</text>
+    <rect x="572" y="290" width="96" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.07" stroke="#FFFFFF" stroke-opacity="0.11"/>
+    <text x="620" y="309" text-anchor="middle" fill="#C4B5FD">NEON</text>
+    <rect x="680" y="290" width="118" height="30" rx="15" fill="#FFFFFF" fill-opacity="0.07" stroke="#FFFFFF" stroke-opacity="0.11"/>
+    <text x="739" y="309" text-anchor="middle" fill="#BAE6FD">FASTAPI</text>
+  </g>
+
+  <rect x="0.75" y="0.75" width="1198.5" height="358.5" rx="27.25" stroke="#BAE6FD" stroke-opacity="0.13" stroke-width="1.5"/>
+</svg>
