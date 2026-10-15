@@ -98,6 +98,35 @@ def verify_api_key(credentials: HTTPAuthorizationCredentials = Depends(_security
     Require a valid bearer token when RAG_API_KEY is configured.
     In development, omit RAG_API_KEY to disable authentication.
     """
+    if settings.NEON_AUTH_REQUIRED:
+        if not credentials or not settings.NEON_AUTH_JWKS_URL or not settings.NEON_AUTH_BASE_URL:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="A Neon Auth bearer token is required.",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+
+        try:
+            import jwt
+
+            signing_key = jwt.PyJWKClient(settings.NEON_AUTH_JWKS_URL).get_signing_key_from_jwt(
+                credentials.credentials
+            )
+            claims = jwt.decode(
+                credentials.credentials,
+                signing_key.key,
+                algorithms=["EdDSA"],
+                issuer=settings.NEON_AUTH_BASE_URL,
+            )
+            return claims.get("sub")
+        except Exception as exc:
+            logfire.warning(f"Unauthorized /query request: invalid Neon Auth token ({exc}).")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid Neon Auth bearer token.",
+                headers={"WWW-Authenticate": "Bearer"},
+            ) from exc
+
     if not settings.API_KEY:
         # Development mode: no API key required.
         return None

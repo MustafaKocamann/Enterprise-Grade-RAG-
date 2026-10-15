@@ -4,6 +4,7 @@ from typing import Dict, Optional
 
 import logfire
 from qdrant_client import QdrantClient
+import requests
 
 from app.config import settings
 
@@ -64,12 +65,69 @@ def check_postgres() -> ConnectionStatus:
         return ConnectionStatus(healthy=False, message=str(e))
 
 
+def check_neon_auth() -> ConnectionStatus:
+    """Check that Neon Auth's public JWKS endpoint is reachable."""
+    if not settings.NEON_AUTH_JWKS_URL:
+        return ConnectionStatus(healthy=True, message="Not configured")
+
+    start = time.perf_counter()
+    try:
+        response = requests.get(settings.NEON_AUTH_JWKS_URL, timeout=5)
+        response.raise_for_status()
+        response.json()
+        latency = (time.perf_counter() - start) * 1000
+        return ConnectionStatus(healthy=True, message="JWKS reachable", latency_ms=latency)
+    except Exception as e:
+        return ConnectionStatus(healthy=False, message=str(e))
+
+
+def check_neon_object_storage() -> ConnectionStatus:
+    """Check Neon S3-compatible Object Storage using deployed credentials."""
+    if not settings.NEON_S3_ENDPOINT_URL:
+        return ConnectionStatus(healthy=True, message="Not configured")
+
+    start = time.perf_counter()
+    try:
+        import boto3
+
+        client = boto3.client(
+            "s3",
+            endpoint_url=settings.NEON_S3_ENDPOINT_URL,
+            region_name=settings.NEON_S3_REGION,
+            aws_access_key_id=settings.NEON_S3_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.NEON_S3_SECRET_ACCESS_KEY,
+        )
+        client.list_buckets()
+        latency = (time.perf_counter() - start) * 1000
+        return ConnectionStatus(healthy=True, message="Connected", latency_ms=latency)
+    except Exception as e:
+        return ConnectionStatus(healthy=False, message=str(e))
+
+
+def check_neon_function() -> ConnectionStatus:
+    """Check the deployed Neon hello function endpoint."""
+    if not settings.NEON_FUNCTION_HELLO_BASE_URL:
+        return ConnectionStatus(healthy=True, message="Not configured")
+
+    start = time.perf_counter()
+    try:
+        response = requests.get(settings.NEON_FUNCTION_HELLO_BASE_URL, timeout=5)
+        response.raise_for_status()
+        latency = (time.perf_counter() - start) * 1000
+        return ConnectionStatus(healthy=True, message="Connected", latency_ms=latency)
+    except Exception as e:
+        return ConnectionStatus(healthy=False, message=str(e))
+
+
 def check_all_connections() -> Dict[str, ConnectionStatus]:
     """Verify connectivity to all external dependencies."""
     return {
         "Qdrant": check_qdrant(),
         "Redis": check_redis(),
         "Postgres": check_postgres(),
+        "Neon Auth": check_neon_auth(),
+        "Neon Object Storage": check_neon_object_storage(),
+        "Neon Function": check_neon_function(),
     }
 
 

@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     """
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=(".env", ".env.local"),
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -64,7 +64,37 @@ class Settings(BaseSettings):
     QDRANT_COLLECTION: str = "enterprise_rag"
 
     # --- NEON SERVERLESS POSTGRES (LangGraph checkpointer) ---
-    NEON_DB_URL: str | None = None
+    NEON_DB_URL: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("DATABASE_URL", "NEON_DB_URL"),
+    )
+    NEON_BRANCH: str | None = None
+
+    # --- NEON AUTH ---
+    NEON_AUTH_BASE_URL: str | None = None
+    NEON_AUTH_JWKS_URL: str | None = None
+    NEON_AUTH_REQUIRED: bool = False
+
+    # --- NEON OBJECT STORAGE ---
+    NEON_S3_ENDPOINT_URL: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("NEON_S3_ENDPOINT_URL", "AWS_ENDPOINT_URL_S3"),
+    )
+    NEON_S3_REGION: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("NEON_S3_REGION", "AWS_REGION"),
+    )
+    NEON_S3_ACCESS_KEY_ID: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("NEON_S3_ACCESS_KEY_ID", "AWS_ACCESS_KEY_ID"),
+    )
+    NEON_S3_SECRET_ACCESS_KEY: str | None = Field(
+        default=None,
+        validation_alias=AliasChoices("NEON_S3_SECRET_ACCESS_KEY", "AWS_SECRET_ACCESS_KEY"),
+    )
+
+    # --- NEON FUNCTIONS ---
+    NEON_FUNCTION_HELLO_BASE_URL: str | None = None
 
     # --- UPSTASH REDIS (rate limiting) ---
     UPSTASH_REDIS_REST_URL: str | None = None
@@ -103,6 +133,8 @@ class Settings(BaseSettings):
         Serverless Postgres closes idle connections, so append TCP keepalive
         options to keep the connection pool healthy between requests.
         """
+        if not self.NEON_DB_URL:
+            raise ValueError("DATABASE_URL or NEON_DB_URL must be configured for Postgres.")
         base = self.NEON_DB_URL.rstrip("/")
         keepalive = "keepalives=1&keepalives_idle=30&keepalives_interval=10&keepalives_count=5"
         if "?" in base:

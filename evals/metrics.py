@@ -9,9 +9,17 @@ Contexts are truncated to 300 chars (2 chunks max) so no single request exceeds 
 
 import os
 import asyncio
+import sys
+import types
 import logfire
 import pandas as pd
 from openai import AsyncOpenAI
+from langchain_google_vertexai import ChatVertexAI
+
+
+vertexai_compat = types.ModuleType("langchain_community.chat_models.vertexai")
+setattr(vertexai_compat, "ChatVertexAI", ChatVertexAI)
+sys.modules.setdefault("langchain_community.chat_models.vertexai", vertexai_compat)
 
 
 from ragas.llms import llm_factory
