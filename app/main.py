@@ -236,16 +236,22 @@ def query(
     start = time.perf_counter()
     with logfire.span("🔍 /query", request_id=request_id, thread_id=thread_id):
         # Gate: run guardrails synchronously so blocked requests never run the graph.
-        rail_fired, rail_response = guard(q)
+        rail_fired, rail_response, rail_thought = guard(q)
         if rail_fired:
             GUARDRAILS_BLOCKS_TOTAL.labels(blocked="true").inc()
             RAG_REQUESTS_TOTAL.labels(status="blocked").inc()
             RAG_REQUEST_DURATION.observe(time.perf_counter() - start)
             logfire.info("🛡️ Request blocked by guardrails", request_id=request_id, thread_id=thread_id)
+
+            thought_process = []
+            if rail_thought:
+                thought_process.append(f"Thought: {rail_thought}")
+            thought_process.extend(["Intent: Guardrails Fired", "Retrieval: Skipped"])
+
             return {
                 "question": q,
                 "answer": rail_response,
-                "thought_process": ["Intent: Guardrails Fired", "Retrieval: Skipped"],
+                "thought_process": thought_process,
                 "status": "Blocked by guardrails.",
                 "sources": [],
             }
@@ -260,6 +266,7 @@ def query(
                 "documents": [],
                 "plan": ["Start"],
                 "status": "Initializing Graph...",
+                "thread_id": thread_id,
             }
             config = {"configurable": {"thread_id": thread_id}}
             final_output = rag_agent.invoke(initial_state, config=config)

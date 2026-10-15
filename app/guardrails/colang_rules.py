@@ -94,6 +94,25 @@ define bot express farewell
 define flow farewell
   user express farewell
   bot express farewell
+
+define user ask technical question
+  "what is kubernetes"
+  "tell me about kubernetes"
+  "what is a kubernetes pod"
+  "how does kubernetes scheduling work"
+  "what is intel fpga acceleration"
+  "how does sriov work"
+  "explain bgp routing and vlans"
+  "how do kubernetes operators work"
+  "what is container networking"
+  "what is kubernetes architecture"
+  "how to deploy a container in kubernetes"
+  "tell me about intel xeon processors"
+  "what is sdn in enterprise networking"
+
+define flow handle technical question
+  user ask technical question
+  bot allow technical question
 """
 
 from app.config import settings

@@ -3,14 +3,13 @@ import logfire
 from app.agents.state import AgentState
 from app.gateway import get_langchain_llm
 
-# Portkey-backed LLM: fallback + cache + retry — same .invoke() interface as ChatOpenAI
-llm = get_langchain_llm(feature="planner")
-
-
 def planner_node(state: AgentState):
     """
     The Planner determines if a search is needed based on the ENTIRE conversation.
     """
+    user_id = state.get("thread_id", "default-user")
+    planner_llm = get_langchain_llm(feature="planner", user=user_id)
+
     # Get the conversation history (excluding the latest message)
     history = ""
     for msg in state["messages"][:-1]:
@@ -37,7 +36,10 @@ def planner_node(state: AgentState):
     """
 
     with logfire.span("🧠 Planner Decision"):
-        decision = llm.invoke(prompt).content.strip()
+        decision = planner_llm.invoke(prompt).content.strip()
+        if "<think>" in decision:
+            import re
+            decision = re.sub(r"<think>.*?</think>", "", decision, flags=re.DOTALL | re.IGNORECASE).strip()
         logfire.info(f"Intent identified: {decision}")
 
     if decision == "CONVERSATIONAL":

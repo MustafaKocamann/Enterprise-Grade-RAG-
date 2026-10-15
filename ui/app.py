@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import time
 import uuid
@@ -86,7 +87,11 @@ st.title("🤖 Enterprise Agentic Assistant")
 for message in st.session_state.messages:
     avatar = AI_AVATAR if message["role"] == "assistant" else USER_AVATAR
     with st.chat_message(message["role"], avatar=avatar):
-        st.markdown(message["content"])
+        content = message["content"]
+        if "<think>" in content:
+            content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL | re.IGNORECASE).strip()
+            content = re.sub(r"<think>.*$", "", content, flags=re.DOTALL | re.IGNORECASE).strip()
+        st.markdown(content)
 
 # Chat Input
 if prompt := st.chat_input("Ask about your documentation..."):
@@ -172,6 +177,9 @@ if prompt := st.chat_input("Ask about your documentation..."):
             # Final Answer Streaming
             answer_placeholder = st.empty()
             full_answer = data.get("answer", "No response.")
+            if "<think>" in full_answer:
+                full_answer = re.sub(r"<think>.*?</think>", "", full_answer, flags=re.DOTALL | re.IGNORECASE).strip()
+                full_answer = re.sub(r"<think>.*$", "", full_answer, flags=re.DOTALL | re.IGNORECASE).strip()
 
             curr_text = ""
             for char in full_answer:
